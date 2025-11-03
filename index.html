@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Yield Prediction Per Country</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    h1 {
+      color: #1b5e20;
+      margin-bottom: 0;
+    }
+    h2 {
+      color: #2e7d32;
+      margin-top: 5px;
+    }
+    .form-box {
+      background-color: black;
+      border-radius: 20px;
+      width: 500px;
+      margin: 30px auto;
+      padding: 20px;
+      color: white;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin-left: 25px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input[type=text], input[type=number] {
+      width: 90%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: none;
+      font-size: 15px;
+    }
+    input[type=submit] {
+      background-color: #e53935;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+    .output {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Crop Yield Prediction Per Country</h1>
+  <h2>Crop Features Here</h2>
+
+  <div class="form-box">
+    <form id="cropForm">
+      <label>Year</label>
+      <input type="number" id="year" required>
+
+      <label>average_rain_fall_mm_per_year</label>
+      <input type="number" step="0.01" id="rainfall" required>
+
+      <label>pesticides_tonnes</label>
+      <input type="number" step="0.01" id="pesticides" required>
+
+      <label>avg_temp</label>
+      <input type="number" step="0.01" id="temp" required>
+
+      <label>Area</label>
+      <input type="text" id="area" required>
+
+      <label>Item</label>
+      <input type="text" id="item" required>
+
+      <input type="submit" value="Predict">
+    </form>
+
+    <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    document.getElementById("cropForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const rainfall = parseFloat(document.getElementById("rainfall").value);
+      const pesticides = parseFloat(document.getElementById("pesticides").value);
+      const temp = parseFloat(document.getElementById("temp").value);
+      const area = document.getElementById("area").value;
+      const item = document.getElementById("item").value;
+
+      let yieldValue = 0;
+      let message = "";
+
+      // Simple rule-based prediction logic
+      if (rainfall > 1500 && temp < 20) {
+        yieldValue = (rainfall * 0.002 + pesticides * 0.1 + temp * 0.2).toFixed(2);
+        message = `Great conditions for ${item}! High rainfall and mild temperature likely increase yield.`;
+      } else if (rainfall < 800 && temp > 30) {
+        yieldValue = (rainfall * 0.0005 + pesticides * 0.05 + temp * 0.05).toFixed(2);
+        message = `Poor conditions for ${item}. Low rainfall and high temperature may reduce yield.`;
+      } else if (pesticides > 300) {
+        yieldValue = (rainfall * 0.001 + pesticides * 0.02 + temp * 0.08).toFixed(2);
+        message = `Excessive pesticide use may impact soil quality and yield for ${item}.`;
+      } else {
+        yieldValue = (rainfall * 0.001 + pesticides * 0.04 + temp * 0.1).toFixed(2);
+        message = `Moderate conditions for ${item} in ${area}. Expected average yield.`;
+      }
+
+      document.getElementById("output").innerHTML = `
+        <h3>Predicted Crop Yield: ${yieldValue} tonnes per hectare</h3>
+        <p>${message}</p>
+      `;
+    });
+  </script>
+
+</body>
+</html>
